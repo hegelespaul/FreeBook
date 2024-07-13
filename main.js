@@ -140,6 +140,26 @@ function generateNewHTMLTune(title, composer, sections) {
                         pre:nth-child(n+2) {
                         margin-left: -2.5px;
                     }
+                    @media (max-width: 768px) {
+                        body {
+                            width: 90%;
+                            padding: 10px;
+                        }
+                        pre {
+                            font-size: 18px;
+                        }
+                    }
+
+                    /* Adjustments for smaller mobile devices */
+                    @media (max-width: 480px) {
+                        body {
+                        width: 90%
+                            padding: 5px;
+                        }
+                        pre {
+                            font-size: 16px;
+                        }
+                    }
                 </style>
                 <title>${title}</title>
             </head>
