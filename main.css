@@ -1,0 +1,39 @@
+body {
+    display: inline-block;
+    background-color: #e0e0e0;
+    /* Adding a background color for better visibility */
+}
+
+.main-header {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+#searchBox{
+    margin-bottom: 30px;
+}
+
+.songIndex {
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    background-color: #f0f0f0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#index {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(auto-fill);
+    grid-row-gap: .5em;
+    grid-column-gap: 1em;
+}
+
+button{
+    cursor: pointer;
+    display: none;
+}
