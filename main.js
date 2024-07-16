@@ -404,7 +404,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize();
 
-            const API_KEY = 'AIzaSyCkCLQMPGP_e0U7cJm8xxDGZohV0TeugXs';
+            const API_KEY = 'None';
                 const query = document.title;
                 console.log(query)
 
