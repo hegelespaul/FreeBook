@@ -319,6 +319,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                     let singleChord = e.split(',');
                     htmlContent += `<pre>`;
                     singleChord.forEach(chord => {
+                        chord = chord.replace(/0/g, '°');
                         htmlContent += `<div>${chord}</div>`;
                     });
                     htmlContent += `</pre>`;
