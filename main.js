@@ -14,7 +14,9 @@ fetch(filePath)
             tunes.push({
                 title: element['Title'],
                 composer: element['Composer'],
-                sections: element['Sections']
+                sections: element['Sections'],
+                key: element['Key'],
+                timesignature: element['TimeSignature']
             });
         });
 
@@ -26,7 +28,7 @@ fetch(filePath)
             newDiv.className = 'tune';
 
             const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections);
+            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature);
             titleLink.textContent = tune.title;
 
             const composerLink = document.createElement('a');
@@ -57,7 +59,9 @@ fetch(filePath)
 
 
 
-function generateNewHTMLTune(title, composer, sections) {
+function generateNewHTMLTune(title, composer, sections, key, timesignature) {
+    key = key !== undefined ? key : '';
+    timesignature = timesignature !== undefined ? timesignature : '';
     let htmlContent = `
             <!DOCTYPE html>
             <html lang="en">
@@ -85,7 +89,7 @@ function generateNewHTMLTune(title, composer, sections) {
                         padding: 20px;
                         text-align: center;
                         border-radius: 10px;
-                        margin-bottom: -30px; /* Adjust as needed */
+                        margin-bottom: -35px; /* Adjust as needed */
                     }
                     #sheet {
                         width: 100%;
@@ -97,6 +101,13 @@ function generateNewHTMLTune(title, composer, sections) {
                     }
                     #composer{
                         text-align: right;
+                    }
+                    #key{
+                        text-align: left;
+                        border-radius: 10px;
+                        font-size: 14px;
+                        max-width: fit-content;
+                        padding: 3px;
                     }
                     h1, h4, h5 {
                         margin: 0;
@@ -134,39 +145,75 @@ function generateNewHTMLTune(title, composer, sections) {
                         justify-content: space-around;
                         align-items: center;
                         text-align: center;
-                        font-size: 20px;
+                        font-size: 1vw;
                         margin-bottom: 10px;
+                        max-width: 100%; /* Ensure it does not exceed the screen width */
+                        overflow: auto; /* Handle overflow content */
                     }
                         pre:nth-child(n+2) {
                         margin-left: -2.5px;
                     }
+                    .chord {
+                        margin-left: 2%;
+                        margin-right: 2%;
+                    }
                     @media (max-width: 768px) {
                         body {
-                            width: 90%;
-                            padding: 10px;
+                            width: 80%;
+                        }
+                        h2 {
+                            font-size: 16px; /* Adjust for smallest screens */
+                        }
+                        h4, h5 {
+                            font-size: 1.5vw; /* Adjust for smallest screens */
                         }
                         pre {
-                            font-size: 18px;
+                            font-size: 2vw;
                         }
                     }
 
+                    @media print {
+                        pre {
+                            font-size: 2vw;
+                        }   
+                    }
+}
+
                     /* Adjustments for smaller mobile devices */
                     @media (max-width: 480px) {
+                        .header {
+                            margin-bottom: -30px; /* Adjust as needed */
+                        }
                         body {
-                        width: 90%
-                            padding: 5px;
+                            width: 90%
+                        }
+                        h1 {
+                            font-size: 5vw; /* Adjust for smallest screens */
+                        }
+                        h2 {
+                            font-size: 4vw; /* Adjust for smallest screens */
+                        }
+                        h4, h5 {
+                            font-size: 3vw; /* Adjust for smallest screens */
                         }
                         pre {
-                            font-size: 16px;
+                            font-size: 3vw;
+                        }
+                        #composer{
+                            font-size: 8px;
+                        }
+                        #key{
+                            font-size: 8px;
                         }
                     }
                 </style>
-                <title>${title}</title>
+                <title>${title} - ${composer}</title>
             </head>
             <body>
                 <section class="header">
                     <h1>${title}</h1>
                     <p id="composer">- ${composer}</p>
+                    <p id="key">${key}  ${timesignature}</p>
                 </section>
                 <section id="sheet">
         `;
@@ -192,7 +239,8 @@ function generateNewHTMLTune(title, composer, sections) {
                 let singleChord = e.split(',');
                 htmlContent += `<pre>`;
                 singleChord.forEach(chord => {
-                    htmlContent += `<div>${chord}</div>`;
+                    chord = chord.replace(/0/g, '°')
+                    htmlContent += `<div class="chord">${chord}</div>`;
                 });
                 htmlContent += `</pre>`;
             });
@@ -219,10 +267,27 @@ function generateNewHTMLTune(title, composer, sections) {
     });
 
     htmlContent += `
-                </section>
-            </body>
-            </html>
-        `;
+            </section>
+            <script>
+            
+                    function adjustFontSize() {
+                        const preElements = document.querySelectorAll("pre");
+                        preElements.forEach(pre => {
+                            let fontSize = parseFloat(window.getComputedStyle(pre).fontSize);
+                            while (pre.scrollWidth > pre.clientWidth && fontSize > 1) {
+                                fontSize -= 0.5; // Decrease font size
+                                pre.style.fontSize = fontSize + 'px';
+                            }
+                        });
+                    }
+
+                    window.addEventListener("resize", adjustFontSize);
+                    adjustFontSize();
+            
+            </script>
+        </body>
+        </html>
+    `;
 
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -253,7 +318,7 @@ function Composer(composer) {
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections);
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.timesignature);
         titleLink.textContent = tune.title;
 
         const composerSpan = document.createElement('span');
@@ -274,7 +339,7 @@ function Composer(composer) {
 function Search() {
 
     document.getElementById('btn').style.display = "none"
-    
+
     let matches = [];
     const text = document.getElementById('SearchText').value.toLowerCase();
 
@@ -292,7 +357,7 @@ function Search() {
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections);
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature);
         titleLink.textContent = tune.title;
 
         const composerLink = document.createElement('a');
@@ -321,7 +386,7 @@ function Search() {
             newDiv.className = 'tune';
 
             const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections);
+            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tine.timesignature);
             titleLink.textContent = tune.title;
 
             const composerLink = document.createElement('a');
@@ -347,7 +412,7 @@ function Search() {
     }
 }
 
-function clearSearch(){
+function clearSearch() {
     let field = document.getElementById('SearchText').value;
     field = '';
 }
