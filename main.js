@@ -71,6 +71,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                 <link rel="icon" href="https://cdn-icons-png.freepik.com/512/10000/10000516.png" type="image/png">
                 <style>
                     body {
+                        margin-left: 0px;
                         display: flex;
                         flex-direction: column;
                         align-items: center; /* Center items horizontally */
@@ -83,13 +84,28 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                         background-color: #f5f5f5;
                         min-height: 100vh; 
                     }
+                    ::-webkit-scrollbar { 
+                        display: none; 
+                    }
+                    .transpose-buttons {
+                        display: inline-flex;
+                        flex-direction: column;
+                        margin-left: 10px;
+                        vertical-align: middle;
+                    }
+                    .transpose-buttons button {
+                        background: none;
+                        border: none;
+                        font-size: 16px;
+                        cursor: pointer;
+                    }
                     .header {
                         width: 100%;
                         background-color: #ffffff;
                         padding: 20px;
                         text-align: center;
                         border-radius: 10px;
-                        margin-bottom: -35px; /* Adjust as needed */
+                        margin-bottom: -20px; /* Adjust as needed */
                     }
                     #sheet {
                         width: 100%;
@@ -157,9 +173,35 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                         margin-left: 2%;
                         margin-right: 2%;
                     }
+                    #video-container{
+                        width: 20%;
+                        height: 3%;
+                    }
+                    .floating-video {
+                        position: absolute;
+                        bottom: 20px; /* Adjust as needed */
+                        right: -200px; /* Adjust as needed */
+                        width: 300px; /* Adjust width as needed */
+                        height: 169px; /* Adjust height as needed */
+                        z-index: 1000; /* Ensure it's above other content */
+                        border: none;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better visibility */
+                    }
+                    div > button {
+                        position: relative;
+                        background-color: #fff;
+                        border: 1px solid #ccc;
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        font-size: 14px;
+                        cursor: pointer;
+                        right: -200px;
+                        top: 10px;
+                    }
                     @media (max-width: 768px) {
                         body {
                             width: 80%;
+                            margin-left: 0px;
                         }
                         h2 {
                             font-size: 16px; /* Adjust for smallest screens */
@@ -177,33 +219,47 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                             font-size: 2vw;
                         }   
                     }
-}
 
                     /* Adjustments for smaller mobile devices */
                     @media (max-width: 480px) {
                         .header {
-                            margin-bottom: -30px; /* Adjust as needed */
+                            margin-bottom: -20px; /* Adjust as needed */
                         }
                         body {
-                            width: 90%
+                            width: 90%;
+                            margin-left: 0px;
                         }
                         h1 {
                             font-size: 5vw; /* Adjust for smallest screens */
                         }
                         h2 {
-                            font-size: 4vw; /* Adjust for smallest screens */
+                            font-size: 3vw; /* Adjust for smallest screens */
                         }
                         h4, h5 {
                             font-size: 3vw; /* Adjust for smallest screens */
                         }
                         pre {
-                            font-size: 3vw;
+                            font-size: 2.5vw;
                         }
                         #composer{
                             font-size: 8px;
                         }
                         #key{
-                            font-size: 8px;
+                            font-size: 2.5vw;
+                        }
+                        .transpose-buttons button {  
+                            font-size: 3vw;
+                        }
+                        .floating-video {
+                            bottom: 80px;
+                            right: 0px;
+                            width: 150px;
+                            height: 84.5px;
+                        }
+                        div > button {
+                            font-size: 10px;
+                            right: 0px;
+                            top: -50px;
                         }
                     }
                 </style>
@@ -213,7 +269,12 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
                 <section class="header">
                     <h1>${title}</h1>
                     <p id="composer">- ${composer}</p>
-                    <p id="key">${key}  ${timesignature}</p>
+                    <p id="key">${timesignature}
+                    <span class="transpose-buttons">
+                        <button onclick="transposeChords(1)">&#9650;</button>
+                        <button onclick="transposeChords(-1)">&#9660;</button>
+                    </span>
+                    </p>
                 </section>
                 <section id="sheet">
         `;
@@ -268,22 +329,136 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
 
     htmlContent += `
             </section>
+            <div id="video-container" style="margin-top: 20px;">
+                <!-- Video will be appended here -->
+            </div>
             <script>
             
-                    function adjustFontSize() {
-                        const preElements = document.querySelectorAll("pre");
-                        preElements.forEach(pre => {
-                            let fontSize = parseFloat(window.getComputedStyle(pre).fontSize);
-                            while (pre.scrollWidth > pre.clientWidth && fontSize > 1) {
-                                fontSize -= 0.5; // Decrease font size
-                                pre.style.fontSize = fontSize + 'px';
-                            }
-                        });
+            const notes = [
+                "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
+                "Db", "Eb", "Gb", "Ab", "Bb"
+            ];
+            const enharmonics = {
+                "B#": "C", "E#": "F", "Cb": "B", "Fb": "E",
+                "Db": "C#", "Eb": "D#", "Gb": "F#", "Ab": "G#", "Bb": "A#",
+                "C#": "Db", "D#": "Eb", "F#": "Gb", "G#": "Ab", "A#": "Bb"
+            };
+
+            let currentTransposition = 0;
+
+            function transposeChord(chord, semitones) {
+                let newChord = "";
+                let regex = /^([A-Ga-g][#b]?)(.*)$/;
+                let match = chord.match(regex);
+
+                if (match) {
+                    let note = match[1];
+                    let rest = match[2];
+
+                    if (enharmonics[note]) {
+                        note = enharmonics[note];
                     }
 
-                    window.addEventListener("resize", adjustFontSize);
-                    adjustFontSize();
-            
+                    let index = notes.indexOf(note);
+                    if (index !== -1) {
+                        let newIndex = (index + semitones + notes.length) % notes.length;
+                        let transposedNote = notes[newIndex];
+
+                        // Use the preferred enharmonic equivalents
+                        if (enharmonics[transposedNote]) {
+                            transposedNote = enharmonics[transposedNote];
+                        }
+
+                        newChord = transposedNote + rest;
+                    } else {
+                        newChord = chord; // If not a recognized note, return original chord
+                    }
+                } else {
+                    newChord = chord; // If not a recognized chord, return original chord
+                }
+
+                return newChord;
+            }
+
+            function transposeChords(semitones) {
+                const chordElements = document.querySelectorAll(".chord");
+                chordElements.forEach(chordElement => {
+                    let chord = chordElement.innerText;
+                    let newChord = transposeChord(chord, semitones);
+                    chordElement.innerText = newChord;
+                });
+            }
+
+            function adjustFontSize() {
+                const preElements = document.querySelectorAll("pre");
+                preElements.forEach(pre => {
+                    let fontSize = parseFloat(window.getComputedStyle(pre).fontSize);
+                    while (pre.scrollWidth > pre.clientWidth && fontSize > 1) {
+                        fontSize -= 0.5; // Decrease font size
+                        pre.style.fontSize = fontSize + 'px';
+                    }
+                });
+            }
+
+            window.addEventListener("resize", adjustFontSize);
+            adjustFontSize();
+
+            const API_KEY = 'AIzaSyCkCLQMPGP_e0U7cJm8xxDGZohV0TeugXs';
+                const query = document.title;
+                console.log(query)
+
+                    // Function to search for a video on YouTube
+                    function searchYouTube(query) {
+                        const url = 'https://www.googleapis.com/youtube/v3/search?key=' + API_KEY + '&part=snippet&q=' + query + '&type=video';
+
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.items.length > 0) {
+                                    const videoId = data.items[0].id.videoId;
+                                    embedYouTubeVideo(videoId);
+                                } else {
+                                    console.error('No video found for the given query.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching YouTube video:', error);
+                            });
+                    }
+
+                    // Function to embed the YouTube video
+                    function embedYouTubeVideo(videoId) {
+                        const videoContainer = document.createElement('div');
+                        videoContainer.style.position = 'fixed';
+                        videoContainer.style.bottom = '20px';
+                        videoContainer.style.right = '20px';
+                        videoContainer.style.zIndex = '1000'; // Ensure it's above other content
+
+                        const iframe = document.createElement('iframe');
+                        iframe.className = 'floating-video';
+                        iframe.width = '300'; // Adjust width as needed
+                        iframe.height = '169'; // Adjust height as needed
+                        iframe.src = 'https://www.youtube.com/embed/' + videoId;
+                        iframe.frameborder = '0';
+                        iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+                        iframe.allowfullscreen = true;
+
+                        // Close button
+                        const closeButton = document.createElement('button');
+                        closeButton.innerText = 'Close Video';
+                        closeButton.style.cursor = 'pointer';
+                        closeButton.addEventListener('click', () => {
+                            document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
+                        });
+
+                        videoContainer.appendChild(closeButton);
+                        videoContainer.appendChild(iframe);
+                        document.getElementById('video-container').appendChild(videoContainer);
+                    }
+
+                    // Example usage: Search and embed a YouTube video based on a query
+                    searchYouTube(query);
+
             </script>
         </body>
         </html>
