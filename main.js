@@ -540,7 +540,7 @@ function Search() {
             newDiv.className = 'tune';
 
             const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tine.timesignature, tune.url);
+            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
 
             const composerLink = document.createElement('a');
