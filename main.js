@@ -321,7 +321,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                     htmlContent += `<pre>`;
                     singleChord.forEach(chord => {
                         chord = chord.replace(/0/g, '°');
-                        htmlContent += `<div class="chord>${chord}</div>`;
+                        htmlContent += `<div class="chord">${chord}</div>`;
                     });
                     htmlContent += `</pre>`;
                 });
