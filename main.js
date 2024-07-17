@@ -177,16 +177,15 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                     #video-container{
                         width: 20%;
                         height: 3%;
+                        cursor: move;
                     }
                     .floating-video {
-                        position: absolute;
-                        bottom: 20px; /* Adjust as needed */
-                        right: -200px; /* Adjust as needed */
+                        position: relative;
                         width: 300px; /* Adjust width as needed */
                         height: 169px; /* Adjust height as needed */
-                        z-index: 1000; /* Ensure it's above other content */
                         border: none;
                         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better visibility */
+                        cursor: move;
                     }
                     div > button {
                         position: relative;
@@ -196,8 +195,15 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         border-radius: 5px;
                         font-size: 14px;
                         cursor: pointer;
-                        right: -200px;
-                        top: 10px;
+                        top: 20px;
+                        z-index: 10000;
+                    }
+                    .videoFloat{
+                        display: flex;
+                        flex-direction: column;
+                        width: max-content;
+                        border: none;
+                        cursor: move;
                     }
                     @media (max-width: 768px) {
                         body {
@@ -252,15 +258,11 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                             font-size: 3vw;
                         }
                         .floating-video {
-                            bottom: 80px;
-                            right: 0px;
                             width: 150px;
                             height: 84.5px;
                         }
                         div > button {
                             font-size: 10px;
-                            right: 0px;
-                            top: -50px;
                         }
                     }
                 </style>
@@ -409,10 +411,11 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
             // Function to embed the YouTube video
             function embedYouTubeVideo() {
                 const videoContainer = document.createElement('div');
+                videoContainer.classList.add('videoFloat');
                 videoContainer.style.position = 'fixed';
                 videoContainer.style.bottom = '20px';
                 videoContainer.style.right = '20px';
-                videoContainer.style.zIndex = '1000'; // Ensure it's above other content
+                // videoContainer.style.zIndex = '1000'; // Ensure it's above other content
 
                 const iframe = document.createElement('iframe');
                 iframe.className = 'floating-video';
@@ -428,15 +431,81 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 closeButton.innerText = 'Close Video';
                 closeButton.style.cursor = 'pointer';
                 closeButton.addEventListener('click', () => {
-                    document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
+                    // document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
+                    document.body.removeChild(videoContainer);
+
                 });
 
-                videoContainer.appendChild(closeButton);
                 videoContainer.appendChild(iframe);
-                document.getElementById('video-container').appendChild(videoContainer);
+                videoContainer.appendChild(closeButton);
+                // document.getElementById('video-container').appendChild(videoContainer);
+                document.body.appendChild(videoContainer);
+
             }
 
             embedYouTubeVideo();
+
+            dragElement(document.getElementsByClassName("videoFloat")[0]);
+
+            function dragElement(elmnt) {
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (elmnt) {
+                    elmnt.onmousedown = dragMouseDown;
+                    elmnt.ontouchstart = dragTouchStart;
+                }
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // Get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // Call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
+
+                function dragTouchStart(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // Get the touch position at startup:
+                    pos3 = e.touches[0].clientX;
+                    pos4 = e.touches[0].clientY;
+                    document.ontouchend = closeDragElement;
+                    // Call a function whenever the touch moves:
+                    document.ontouchmove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    if (e.type === 'mousemove') {
+                        // Calculate the new cursor position:
+                        pos1 = pos3 - e.clientX;
+                        pos2 = pos4 - e.clientY;
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                    } else if (e.type === 'touchmove') {
+                        // Calculate the new touch position:
+                        pos1 = pos3 - e.touches[0].clientX;
+                        pos2 = pos4 - e.touches[0].clientY;
+                        pos3 = e.touches[0].clientX;
+                        pos4 = e.touches[0].clientY;
+                    }
+                    // Set the element's new position:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    // Stop moving when mouse button or touch is released:
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                    document.ontouchend = null;
+                    document.ontouchmove = null;
+                }
+            }
+
 
             </script>
         </body>
