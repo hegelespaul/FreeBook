@@ -455,6 +455,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 }
 
                 function dragMouseDown(e) {
+                    if (e.target.tagName === 'BUTTON') return; // Prevent drag if the target is the close button
                     e = e || window.event;
                     e.preventDefault();
                     // Get the mouse cursor position at startup:
@@ -466,6 +467,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 }
 
                 function dragTouchStart(e) {
+                    if (e.target.tagName === 'BUTTON') return; // Prevent drag if the target is the close button
                     e = e || window.event;
                     e.preventDefault();
                     // Get the touch position at startup:
@@ -505,6 +507,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                     document.ontouchmove = null;
                 }
             }
+
 
 
             </script>
