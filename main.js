@@ -418,7 +418,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 iframe.className = 'floating-video';
                 iframe.width = '300'; // Adjust width as needed
                 iframe.height = '169'; // Adjust height as needed
-                iframe.src = "${video_url.replace('watch?v=', 'embed/')}";
+                iframe.src = "${video_url.replace('watch?v=', 'embed/').replace('youtube.com', 'youtube-nocookie.com')}"
                 iframe.frameborder = '0';
                 iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
                 iframe.allowfullscreen = true;
@@ -472,7 +472,7 @@ function Composer(composer) {
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.timesignature, tune.url);
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
 
         const composerSpan = document.createElement('span');
