@@ -1,4 +1,4 @@
-const filePath = 'JazzStandards.json';
+const filePath = 'JazzStandards-url.json';
 let tunes = [];
 
 fetch(filePath)
@@ -16,7 +16,8 @@ fetch(filePath)
                 composer: element['Composer'],
                 sections: element['Sections'],
                 key: element['Key'],
-                timesignature: element['TimeSignature']
+                timesignature: element['TimeSignature'],
+                url: element['url']
             });
         });
 
@@ -28,7 +29,7 @@ fetch(filePath)
             newDiv.className = 'tune';
 
             const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature);
+            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
 
             const composerLink = document.createElement('a');
@@ -59,7 +60,7 @@ fetch(filePath)
 
 
 
-function generateNewHTMLTune(title, composer, sections, key, timesignature) {
+function generateNewHTMLTune(title, composer, sections, key, timesignature, video_url) {
     key = key !== undefined ? key : '';
     timesignature = timesignature !== undefined ? timesignature : '';
     let htmlContent = `
@@ -404,61 +405,38 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature) {
             window.addEventListener("resize", adjustFontSize);
             adjustFontSize();
 
-            const API_KEY = 'None';
-                const query = document.title;
-                console.log(query)
 
-                    // Function to search for a video on YouTube
-                    function searchYouTube(query) {
-                        const url = 'https://www.googleapis.com/youtube/v3/search?key=' + API_KEY + '&part=snippet&q=' + query + '&type=video';
+            // Function to embed the YouTube video
+            function embedYouTubeVideo() {
+                const videoContainer = document.createElement('div');
+                videoContainer.style.position = 'fixed';
+                videoContainer.style.bottom = '20px';
+                videoContainer.style.right = '20px';
+                videoContainer.style.zIndex = '1000'; // Ensure it's above other content
 
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.items.length > 0) {
-                                    const videoId = data.items[0].id.videoId;
-                                    embedYouTubeVideo(videoId);
-                                } else {
-                                    console.error('No video found for the given query.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching YouTube video:', error);
-                            });
-                    }
+                const iframe = document.createElement('iframe');
+                iframe.className = 'floating-video';
+                iframe.width = '300'; // Adjust width as needed
+                iframe.height = '169'; // Adjust height as needed
+                iframe.src = "${video_url.replace('watch?v=', 'embed/')}";
+                iframe.frameborder = '0';
+                iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowfullscreen = true;
 
-                    // Function to embed the YouTube video
-                    function embedYouTubeVideo(videoId) {
-                        const videoContainer = document.createElement('div');
-                        videoContainer.style.position = 'fixed';
-                        videoContainer.style.bottom = '20px';
-                        videoContainer.style.right = '20px';
-                        videoContainer.style.zIndex = '1000'; // Ensure it's above other content
+                // Close button
+                const closeButton = document.createElement('button');
+                closeButton.innerText = 'Close Video';
+                closeButton.style.cursor = 'pointer';
+                closeButton.addEventListener('click', () => {
+                    document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
+                });
 
-                        const iframe = document.createElement('iframe');
-                        iframe.className = 'floating-video';
-                        iframe.width = '300'; // Adjust width as needed
-                        iframe.height = '169'; // Adjust height as needed
-                        iframe.src = 'https://www.youtube.com/embed/' + videoId;
-                        iframe.frameborder = '0';
-                        iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
-                        iframe.allowfullscreen = true;
+                videoContainer.appendChild(closeButton);
+                videoContainer.appendChild(iframe);
+                document.getElementById('video-container').appendChild(videoContainer);
+            }
 
-                        // Close button
-                        const closeButton = document.createElement('button');
-                        closeButton.innerText = 'Close Video';
-                        closeButton.style.cursor = 'pointer';
-                        closeButton.addEventListener('click', () => {
-                            document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
-                        });
-
-                        videoContainer.appendChild(closeButton);
-                        videoContainer.appendChild(iframe);
-                        document.getElementById('video-container').appendChild(videoContainer);
-                    }
-
-                    // Example usage: Search and embed a YouTube video based on a query
-                    searchYouTube(query);
+            embedYouTubeVideo();
 
             </script>
         </body>
@@ -494,7 +472,7 @@ function Composer(composer) {
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.timesignature);
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
 
         const composerSpan = document.createElement('span');
@@ -533,7 +511,7 @@ function Search() {
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature);
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
 
         const composerLink = document.createElement('a');
@@ -562,7 +540,7 @@ function Search() {
             newDiv.className = 'tune';
 
             const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tine.timesignature);
+            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tine.timesignature, tune.url);
             titleLink.textContent = tune.title;
 
             const composerLink = document.createElement('a');
