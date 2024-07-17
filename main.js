@@ -506,7 +506,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                     document.ontouchend = null;
                     document.ontouchmove = null;
                 }
-            }
+}
 
 
 
