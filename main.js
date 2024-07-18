@@ -69,7 +69,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="icon" href="https://cdn-icons-png.freepik.com/512/10000/10000516.png" type="image/png">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
                 <style>
                     body {
                         margin-left: 0px;
@@ -199,6 +199,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         z-index: 10000;
                     }
                     .videoFloat{
+                        position: absolute;
                         display: flex;
                         flex-direction: column;
                         width: max-content;
@@ -336,6 +337,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
             <div id="video-container" style="margin-top: 20px;">
                 <!-- Video will be appended here -->
             </div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
             <script>
             
             const notes = [
@@ -412,9 +414,9 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
             function embedYouTubeVideo() {
                 const videoContainer = document.createElement('div');
                 videoContainer.classList.add('videoFloat');
-                videoContainer.style.position = 'fixed';
-                videoContainer.style.bottom = '20px';
-                videoContainer.style.right = '20px';
+                videoContainer.style.position = 'absolute';
+                videoContainer.style.bottom = '-20px';
+                videoContainer.style.right = '-20px';
 
                 const iframe = document.createElement('iframe');
                 iframe.className = 'floating-video';
@@ -441,77 +443,49 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
 
                 videoContainer.appendChild(iframe);
                 videoContainer.appendChild(toggleButton);
-                document.body.appendChild(videoContainer);
+                document.getElementById('video-container').appendChild(videoContainer);
             }
 
             embedYouTubeVideo();
 
-
-            dragElement(document.getElementsByClassName("videoFloat")[0]);
-
-            function dragElement(elmnt) {
-                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                if (elmnt) {
-                    elmnt.onmousedown = dragMouseDown;
-                    elmnt.ontouchstart = dragTouchStart;
-                }
-
-                function dragMouseDown(e) {
-                    if (e.target.tagName === 'BUTTON') return; // Prevent drag if the target is the close button
-                    e = e || window.event;
-                    e.preventDefault();
-                    // Get the mouse cursor position at startup:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // Call a function whenever the cursor moves:
-                    document.onmousemove = elementDrag;
-                }
-
-                function dragTouchStart(e) {
-                    if (e.target.tagName === 'BUTTON') return; // Prevent drag if the target is the close button
-                    e = e || window.event;
-                    e.preventDefault();
-                    // Get the touch position at startup:
-                    pos3 = e.touches[0].clientX;
-                    pos4 = e.touches[0].clientY;
-                    document.ontouchend = closeDragElement;
-                    // Call a function whenever the touch moves:
-                    document.ontouchmove = elementDrag;
-                }
-
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    if (e.type === 'mousemove') {
-                        // Calculate the new cursor position:
-                        pos1 = pos3 - e.clientX;
-                        pos2 = pos4 - e.clientY;
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
-                    } else if (e.type === 'touchmove') {
-                        // Calculate the new touch position:
-                        pos1 = pos3 - e.touches[0].clientX;
-                        pos2 = pos4 - e.touches[0].clientY;
-                        pos3 = e.touches[0].clientX;
-                        pos4 = e.touches[0].clientY;
+            document.addEventListener("DOMContentLoaded", function() {
+                // Initialize Dragula
+                dragula([document.querySelector('.floating-video')], {
+                    moves: function (el, container, handle) {
+                        return el.id === 'videoFloat'; // Only allow dragging for the video container
                     }
-                    // Set the element's new position:
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                }
+                }).on('drag', function (el) {
+                    console.log('Dragging:', el);
+                }).on('drop', function (el) {
+                    console.log('Dropped:', el);
+                });
+            });
 
-                function closeDragElement() {
-                    // Stop moving when mouse button or touch is released:
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                    document.ontouchend = null;
-                    document.ontouchmove = null;
-                }
-}
+            // document.addEventListener("DOMContentLoaded", function() {
+            //     interact(document.getElementsByClassName('videoFloat')[0]).draggable({
+            //         listeners: {
+            //             start(event) {
+            //                 console.log(event.type, event.target);
+            //             },
+            //             move(event) {
+            //                 const target = event.target;
+            //                 // Keep the dragged position in the data-x/data-y attributes
+            //                 const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            //                 const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
+            //                 // Translate the element
+            //                 target.style.transform = "translate(x.tostring()+'px', y.tostring()+'px')";
 
-
+            //                 // Update the position attributes
+            //                 target.setAttribute('data-x', x);
+            //                 target.setAttribute('data-y', y);
+            //             },
+            //             end(event) {
+            //                 console.log(event.type, event.target);
+            //             }
+            //         }
+            //     });
+            // });
             </script>
         </body>
         </html>
