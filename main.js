@@ -415,35 +415,37 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 videoContainer.style.position = 'fixed';
                 videoContainer.style.bottom = '20px';
                 videoContainer.style.right = '20px';
-                // videoContainer.style.zIndex = '1000'; // Ensure it's above other content
 
                 const iframe = document.createElement('iframe');
                 iframe.className = 'floating-video';
                 iframe.width = '300'; // Adjust width as needed
                 iframe.height = '169'; // Adjust height as needed
-                iframe.src = "${video_url.replace('watch?v=', 'embed/').replace('youtube.com', 'youtube-nocookie.com')}"
+                iframe.src = "${video_url.replace('watch?v=', '').replace('youtube.com/', 'hepedroza.com/videosFreeBook/downloaded_videos/')}.mp4"
                 iframe.frameborder = '0';
                 iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
                 iframe.allowfullscreen = true;
 
-                // Close button
-                const closeButton = document.createElement('button');
-                closeButton.innerText = 'Close Video';
-                closeButton.style.cursor = 'pointer';
-                closeButton.addEventListener('click', () => {
-                    // document.getElementById('video-container').removeChild(videoContainer); // Remove video container on close
-                    document.body.removeChild(videoContainer);
-
+                // Show/Hide button
+                const toggleButton = document.createElement('button');
+                toggleButton.innerText = 'Hide Video';
+                toggleButton.style.cursor = 'pointer';
+                toggleButton.addEventListener('click', () => {
+                    if (iframe.style.display !== 'none') {
+                        iframe.style.display = 'none'; // Hide video
+                        toggleButton.innerText = 'Show Video';
+                    } else {
+                        iframe.style.display = 'block'; // Show video
+                        toggleButton.innerText = 'Hide Video';
+                    }
                 });
 
                 videoContainer.appendChild(iframe);
-                videoContainer.appendChild(closeButton);
-                // document.getElementById('video-container').appendChild(videoContainer);
+                videoContainer.appendChild(toggleButton);
                 document.body.appendChild(videoContainer);
-
             }
 
             embedYouTubeVideo();
+
 
             dragElement(document.getElementsByClassName("videoFloat")[0]);
 
