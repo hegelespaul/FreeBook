@@ -203,6 +203,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         display: flex;
                         flex-direction: column;
                         width: max-content;
+                        height: fit-content;
                         border: none;
                         cursor: move;
                     }
