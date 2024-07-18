@@ -202,7 +202,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         position: absolute;
                         display: flex;
                         flex-direction: column;
-                        width: max-content;
+                        width: 50%;
                         border: none;
                         cursor: move;
                     }
@@ -264,6 +264,10 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         }
                         div > button {
                             font-size: 10px;
+                        }
+                        .floating-video {
+                            width: 100%; 
+                            height: auto;
                         }
                     }
                 </style>
@@ -415,13 +419,18 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 const videoContainer = document.createElement('div');
                 videoContainer.classList.add('videoFloat');
                 videoContainer.style.position = 'absolute';
-                videoContainer.style.bottom = '-20px';
-                videoContainer.style.right = '-20px';
+
+                if (window.innerWidth <= 480) {
+                    videoContainer.style.bottom = '0px';
+                    videoContainer.style.right = '0px';
+                } else {
+                    videoContainer.style.bottom = '-20px';
+                    videoContainer.style.right = '-20px';
+                }
 
                 const iframe = document.createElement('iframe');
                 iframe.className = 'floating-video';
                 iframe.width = '300'; // Adjust width as needed
-                iframe.height = '169'; // Adjust height as needed
                 iframe.src = "${video_url.replace('watch?v=', '').replace('youtube.com/', 'hepedroza.com/videosFreeBook/downloaded_videos/')}.mp4"
                 iframe.frameborder = '0';
                 iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
@@ -444,48 +453,56 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 videoContainer.appendChild(iframe);
                 videoContainer.appendChild(toggleButton);
                 document.getElementById('video-container').appendChild(videoContainer);
+                makeDraggable(videoContainer);
+
             }
 
+            function makeDraggable(element) {
+                let isDragging = false;
+                let startX, startY, initialX, initialY;
+
+                function onPointerDown(e) {
+                    isDragging = true;
+                    startX = e.clientX || e.touches[0].clientX;
+                    startY = e.clientY || e.touches[0].clientY;
+                    initialX = element.offsetLeft;
+                    initialY = element.offsetTop;
+
+                    document.addEventListener('mousemove', onPointerMove);
+                    document.addEventListener('mouseup', onPointerUp);
+                    document.addEventListener('touchmove', onPointerMove, { passive: false });
+                    document.addEventListener('touchend', onPointerUp);
+                }
+
+                function onPointerMove(e) {
+                    if (isDragging) {
+                        const x = e.clientX || e.touches[0].clientX;
+                        const y = e.clientY || e.touches[0].clientY;
+
+                        const dx = x - startX;
+                        const dy = y - startY;
+
+                        element.style.left = initialX + dx+'px';
+                        element.style.top = initialY + dy+'px';
+
+                        if (e.preventDefault) e.preventDefault(); // Prevent scrolling during drag
+                    }
+                }
+
+                function onPointerUp() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onPointerMove);
+                    document.removeEventListener('mouseup', onPointerUp);
+                    document.removeEventListener('touchmove', onPointerMove);
+                    document.removeEventListener('touchend', onPointerUp);
+                }
+
+                element.addEventListener('mousedown', onPointerDown);
+                element.addEventListener('touchstart', onPointerDown, { passive: false });
+
+            }
             embedYouTubeVideo();
 
-            document.addEventListener("DOMContentLoaded", function() {
-                // Initialize Dragula
-                dragula([document.querySelector('.floating-video')], {
-                    moves: function (el, container, handle) {
-                        return el.id === 'videoFloat'; // Only allow dragging for the video container
-                    }
-                }).on('drag', function (el) {
-                    console.log('Dragging:', el);
-                }).on('drop', function (el) {
-                    console.log('Dropped:', el);
-                });
-            });
-
-            // document.addEventListener("DOMContentLoaded", function() {
-            //     interact(document.getElementsByClassName('videoFloat')[0]).draggable({
-            //         listeners: {
-            //             start(event) {
-            //                 console.log(event.type, event.target);
-            //             },
-            //             move(event) {
-            //                 const target = event.target;
-            //                 // Keep the dragged position in the data-x/data-y attributes
-            //                 const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-            //                 const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-            //                 // Translate the element
-            //                 target.style.transform = "translate(x.tostring()+'px', y.tostring()+'px')";
-
-            //                 // Update the position attributes
-            //                 target.setAttribute('data-x', x);
-            //                 target.setAttribute('data-y', y);
-            //             },
-            //             end(event) {
-            //                 console.log(event.type, event.target);
-            //             }
-            //         }
-            //     });
-            // });
             </script>
         </body>
         </html>
