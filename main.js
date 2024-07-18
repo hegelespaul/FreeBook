@@ -202,7 +202,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         position: absolute;
                         display: flex;
                         flex-direction: column;
-                        width: 50%;
+                        width: max-content;
                         border: none;
                         cursor: move;
                     }
@@ -268,6 +268,9 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         .floating-video {
                             width: 100%; 
                             height: auto;
+                        }
+                        .videoFloat{
+                        width: 50%;
                         }
                     }
                 </style>
