@@ -31,6 +31,8 @@ fetch(filePath)
             const titleLink = document.createElement('a');
             titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
+            titleLink.setAttribute('target', '_blank');
+
 
             const composerLink = document.createElement('a');
             composerLink.href = '#';
@@ -543,6 +545,8 @@ function Composer(composer) {
         const titleLink = document.createElement('a');
         titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
+        titleLink.setAttribute('target', '_blank');
+
 
         const composerSpan = document.createElement('span');
         composerSpan.textContent = tune.composer;
@@ -582,6 +586,8 @@ function Search() {
         const titleLink = document.createElement('a');
         titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
+        titleLink.setAttribute('target', '_blank');
+
 
         const composerLink = document.createElement('a');
         composerLink.href = '#';
@@ -611,6 +617,8 @@ function Search() {
             const titleLink = document.createElement('a');
             titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
+            titleLink.setAttribute('target', '_blank');
+
 
             const composerLink = document.createElement('a');
             composerLink.href = '#';
