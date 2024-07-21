@@ -571,8 +571,6 @@ function Composer(composer) {
 
 function Search() {
 
-    document.getElementById('btn').style.display = "none"
-
     let matches = [];
     const text = document.getElementById('SearchText').value.toLowerCase();
 
@@ -616,6 +614,17 @@ function Search() {
 
     if (matches.length == 0) {
 
+        let searchBox = document.getElementById('searchBox');
+        let existingParagraph = searchBox.querySelector('p');
+
+        if (existingParagraph) {
+            existingParagraph.textContent = 'No matches Found!';
+        } else {
+            let paragraph = document.createElement('p');
+            paragraph.textContent = 'No matches Found!';
+            searchBox.appendChild(paragraph);
+        }
+
         tunes.forEach(tune => {
             const newDiv = document.createElement('div');
             newDiv.className = 'tune';
@@ -647,9 +656,15 @@ function Search() {
         });
 
     }
+
+    if (matches.length == 1382 || matches.length == 0){
+        document.getElementById('btn').style.display = "none"
+    }else{
+        document.getElementById('btn').style.display = "block"
+    }
+
 }
 
 function clearSearch() {
-    let field = document.getElementById('SearchText').value;
-    field = '';
+    document.getElementById('SearchText').value = '';
 }
