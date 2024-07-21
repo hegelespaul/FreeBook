@@ -667,4 +667,11 @@ function Search() {
 
 function clearSearch() {
     document.getElementById('SearchText').value = '';
+
+    let searchBox = document.getElementById('searchBox');
+    let existingParagraph = searchBox.querySelector('p');
+
+    if (existingParagraph) {
+        searchBox.removeChild(existingParagraph);
+    }
 }
