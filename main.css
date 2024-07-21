@@ -5,6 +5,11 @@ body {
     color: #333; /* Dark text for better contrast */
 }
 
+a {
+    color: #055575;
+    text-decoration: solid;
+}
+
 .main-header {
     display: block;
     left: 50%;
@@ -12,7 +17,7 @@ body {
     width: 70%;
     position: relative;
     text-align: center;
-    background-color: #007acc; /* Primary color for header background */
+    background-color: #86a6bb; /* Primary color for header background */
     color: #fff; /* White text for contrast */
     padding: 20px 0; /* Padding for spacing */
 }
@@ -36,7 +41,7 @@ body {
 }
 
 #searchBox button {
-    background-color: #007acc; /* Matching button color */
+    background-color: #86a6bb; /* Matching button color */
     color: #fff;
     border: none;
     border-radius: 5px;

@@ -102,11 +102,11 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                             border: none;
                             font-size: 16px;
                             cursor: pointer;
-                            color: #007acc; /* Modern color */
+                            color: #86a6bb; /* Modern color */
                         }
                         .header {
                             width: 100%;
-                            background-color: #007acc;
+                            background-color: #86a6bb;
                             color: #fff;
                             padding: 20px;
                             text-align: center;
@@ -199,7 +199,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                         }
                         div > button {
                             position: relative;
-                            background-color: #007acc;
+                            background-color: #86a6bb;
                             color: #fff;
                             border: none;
                             padding: 5px 10px;
