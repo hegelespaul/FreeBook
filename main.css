@@ -1,18 +1,48 @@
 body {
     display: inline-block;
-    background-color: #e0e0e0;
-    /* Adding a background color for better visibility */
+    background-color: #f5f5f5; /* Light background for better readability */
+    font-family: 'Roboto', sans-serif; /* Modern font */
+    color: #333; /* Dark text for better contrast */
 }
 
 .main-header {
     display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
     position: relative;
     text-align: center;
+    background-color: #007acc; /* Primary color for header background */
+    color: #fff; /* White text for contrast */
+    padding: 20px 0; /* Padding for spacing */
 }
 
-#searchBox{
+.main-header h1, .main-header h2 {
+    margin: 0;
+}
+
+#searchBox {
     margin-bottom: 30px;
     width: 93%;
+}
+
+#searchBox input {
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Consistent padding */
+    width: calc(100% - 22px); /* Full width minus padding */
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+#searchBox button {
+    background-color: #007acc; /* Matching button color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1em;
 }
 
 .songIndex {
@@ -21,9 +51,12 @@ body {
     left: 50%;
     transform: translateX(-50%);
     width: 70%;
-    background-color: #f0f0f0;
+    background-color: #fff; /* White background for content */
     padding: 20px;
     box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    border-radius: 10px; /* Rounded corners */
+    margin-bottom: 20px; /* Space between elements */
 }
 
 #index {
@@ -34,7 +67,7 @@ body {
     grid-column-gap: 1em;
 }
 
-button{
+button {
     cursor: pointer;
     display: none;
 }
@@ -43,10 +76,17 @@ button{
     .songIndex {
         width: 90%;
     }
+    .main-header {
+        width: 90%;
+    }
 }
 
 @media (max-width: 768px) {
     .songIndex {
+        width: 95%;
+    }
+
+    .main-header {
         width: 95%;
     }
 
@@ -75,6 +115,10 @@ button{
 
 @media (max-width: 480px) {
     .songIndex {
+        width: 100%;
+    }
+
+    .main-header {
         width: 100%;
     }
 

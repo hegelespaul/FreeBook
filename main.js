@@ -73,209 +73,215 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
                 <style>
-                    body {
-                        margin-left: 0px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center; /* Center items horizontally */
-                        justify-content: center; /* Center items vertically */
-                        position: relative;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        width: 60%;
-                        font-family: Arial, sans-serif;
-                        background-color: #f5f5f5;
-                        min-height: 100vh; 
-                    }
-                    ::-webkit-scrollbar { 
-                        display: none; 
-                    }
-                    .transpose-buttons {
-                        display: inline-flex;
-                        flex-direction: column;
-                        margin-left: 10px;
-                        vertical-align: middle;
-                    }
-                    .transpose-buttons button {
-                        background: none;
-                        border: none;
-                        font-size: 16px;
-                        cursor: pointer;
-                    }
-                    .header {
-                        width: 100%;
-                        background-color: #ffffff;
-                        padding: 20px;
-                        text-align: center;
-                        border-radius: 10px;
-                        margin-bottom: -20px; /* Adjust as needed */
-                    }
-                    #sheet {
-                        width: 100%;
-                        background-color: #ffffff;
-                        padding: 20px;
-                        display: grid;
-                        grid-template-columns: repeat(4, 1fr);
-                        border-radius: 10px;
-                    }
-                    #composer{
-                        text-align: right;
-                    }
-                    #key{
-                        text-align: left;
-                        border-radius: 10px;
-                        font-size: 14px;
-                        max-width: fit-content;
-                        padding: 3px;
-                    }
-                    h1, h4, h5 {
-                        margin: 0;
-                        padding: 10px;
-                    }
-                    h1 {
-                        grid-column: span 4;
-                        text-align: center;
-                    }
-                    h2 {
-                        grid-column: span 4;
-                        text-align: left;
-                        border: solid 2px black;
-                        max-width: fit-content;
-                        padding: 3px;
-                    }
-                    h4 {
-                        grid-column: span 4;
-                        border-bottom: 2px solid #ccc;
-                        max-width: fit-content;
-                        padding: 3px;
-                    }
-                    h5 {
-                        grid-column: span 4;
-                        color: #555;
-                    }
-                    pre {
-                        background-color: #fafafa;
-                        border-right: 2.5px solid #000;
-                        border-left: 2.5px solid #000;
-                        padding: 10px;
-                        white-space: pre-wrap;
-                        word-wrap: break-word;
-                        display: flex;
-                        justify-content: space-around;
-                        align-items: center;
-                        text-align: center;
-                        font-size: 1vw;
-                        margin-bottom: 10px;
-                        max-width: 100%; /* Ensure it does not exceed the screen width */
-                        overflow: auto; /* Handle overflow content */
-                    }
-                        pre:nth-child(n+2) {
-                        margin-left: -2.5px;
-                    }
-                    .chord {
-                        margin-left: 2%;
-                        margin-right: 2%;
-                    }
-                    #video-container{
-                        width: 20%;
-                        height: 3%;
-                        cursor: move;
-                    }
-                    .floating-video {
-                        position: relative;
-                        width: 300px; /* Adjust width as needed */
-                        height: 169px; /* Adjust height as needed */
-                        border: none;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add shadow for better visibility */
-                        cursor: move;
-                    }
-                    div > button {
-                        position: relative;
-                        background-color: #fff;
-                        border: 1px solid #ccc;
-                        padding: 5px 10px;
-                        border-radius: 5px;
-                        font-size: 14px;
-                        cursor: pointer;
-                        top: 20px;
-                        z-index: 10000;
-                    }
-                    .videoFloat{
-                        position: absolute;
-                        display: flex;
-                        flex-direction: column;
-                        width: max-content;
-                        height: fit-content;
-                        border: none;
-                        cursor: move;
-                    }
-                    @media (max-width: 768px) {
-                        body {
-                            width: 80%;
+                     body {
                             margin-left: 0px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            position: relative;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            width: 60%;
+                            font-family: 'Roboto', sans-serif;
+                            background-color: #f5f5f5;
+                            color: #333;
+                            min-height: 100vh; 
                         }
-                        h2 {
-                            font-size: 16px; /* Adjust for smallest screens */
+                        ::-webkit-scrollbar { 
+                            display: none; 
                         }
-                        h4, h5 {
-                            font-size: 1.5vw; /* Adjust for smallest screens */
+                        .transpose-buttons {
+                            display: inline-flex;
+                            flex-direction: column;
+                            margin-left: 10px;
+                            vertical-align: middle;
                         }
-                        pre {
-                            font-size: 2vw;
+                        .transpose-buttons button {
+                            background: none;
+                            border: none;
+                            font-size: 16px;
+                            cursor: pointer;
+                            color: #007acc; /* Modern color */
                         }
-                    }
-
-                    @media print {
-                        pre {
-                            font-size: 2vw;
-                        }   
-                    }
-
-                    /* Adjustments for smaller mobile devices */
-                    @media (max-width: 480px) {
                         .header {
-                            margin-bottom: -20px; /* Adjust as needed */
+                            width: 100%;
+                            background-color: #007acc;
+                            color: #fff;
+                            padding: 20px;
+                            text-align: center;
+                            border-radius: 10px;
+                            margin-bottom: -20px;
                         }
-                        body {
-                            width: 90%;
-                            margin-left: 0px;
+                        #sheet {
+                            width: 100%;
+                            background-color: #ffffff;
+                            padding: 20px;
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            border-radius: 10px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+                        #composer {
+                            text-align: right;
+                        }
+                        #key {
+                            text-align: right;
+                            border-radius: 10px;
+                            font-size: 16px;
+                            max-width: fit-content;
+                            padding: 5px;
+                            background-color: #F9F9F9;
+                            color: #000;
+                            align-content: center;
+                        }
+                        }
+                        h1, h4, h5 {
+                            margin: 0;
+                            padding: 10px;
                         }
                         h1 {
-                            font-size: 5vw; /* Adjust for smallest screens */
+                            grid-column: span 4;
+                            text-align: center;
                         }
                         h2 {
-                            font-size: 3vw; /* Adjust for smallest screens */
+                            grid-column: span 4;
+                            text-align: left;
+                            border: solid 2px #000;
+                            max-width: fit-content;
+                            padding: 3px;
                         }
-                        h4, h5 {
-                            font-size: 3vw; /* Adjust for smallest screens */
+                        h4 {
+                            grid-column: span 4;
+                            border-bottom: 2px solid #ccc;
+                            max-width: fit-content;
+                            padding: 3px;
+                        }
+                        h5 {
+                            grid-column: span 4;
+                            color: #555;
                         }
                         pre {
-                            font-size: 2.5vw;
+                            background-color: #F9F9F9;
+                            border-right: 2px solid #000;
+                            border-left: 2px solid #000;
+                            padding: 10px;
+                            white-space: pre-wrap;
+                            word-wrap: break-word;
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
+                            text-align: center;
+                            font-size: 1vw;
+                            margin-bottom: 10px;
+                            max-width: 100%;
+                            overflow: auto;
                         }
-                        #composer{
-                            font-size: 8px;
+                        pre:nth-child(n+2) {
+                            margin-left: -2px;
                         }
-                        #key{
-                            font-size: 2.5vw;
+                        .chord {
+                            margin-left: 2%;
+                            margin-right: 2%;
                         }
-                        .transpose-buttons button {  
-                            font-size: 3vw;
+                        #video-container {
+                            width: 20%;
+                            height: 3%;
+                            cursor: move;
                         }
                         .floating-video {
-                            width: 150px;
-                            height: 84.5px;
+                            position: relative;
+                            width: 300px;
+                            height: 169px;
+                            border: none;
+                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                            cursor: move;
                         }
                         div > button {
-                            font-size: 10px;
+                            position: relative;
+                            background-color: #007acc;
+                            color: #fff;
+                            border: none;
+                            padding: 5px 10px;
+                            border-radius: 5px;
+                            font-size: 14px;
+                            cursor: pointer;
+                            top: 20px;
+                            z-index: 10000;
                         }
-                        .floating-video {
-                            width: 100%; 
-                            height: auto;
+                        .videoFloat {
+                            position: absolute;
+                            display: flex;
+                            flex-direction: column;
+                            width: max-content;
+                            height: fit-content;
+                            border: none;
+                            cursor: move;
                         }
-                        .videoFloat{
-                        width: 50%;
+                        @media (max-width: 768px) {
+                            body {
+                                width: 80%;
+                                margin-left: 0px;
+                            }
+                            h2 {
+                                font-size: 16px;
+                            }
+                            h4, h5 {
+                                font-size: 1.5vw;
+                            }
+                            pre {
+                                font-size: 2vw;
+                            }
                         }
-                    }
+                        @media print {
+                            pre {
+                                font-size: 2vw;
+                            }
+                        }
+                        @media (max-width: 480px) {
+                            .header {
+                                margin-bottom: -20px;
+                            }
+                            body {
+                                width: 90%;
+                                margin-left: 0px;
+                            }
+                            h1 {
+                                font-size: 5vw;
+                            }
+                            h2 {
+                                font-size: 3vw;
+                            }
+                            h4, h5 {
+                                font-size: 3vw;
+                            }
+                            pre {
+                                font-size: 2.5vw;
+                            }
+                            #composer {
+                                font-size: 8px;
+                            }
+                            #key {
+                                font-size: 2.5vw;
+                            }
+                            .transpose-buttons button {  
+                                font-size: 3vw;
+                            }
+                            .floating-video {
+                                width: 150px;
+                                height: 84.5px;
+                            }
+                            div > button {
+                                font-size: 10px;
+                            }
+                            .floating-video {
+                                width: 100%; 
+                                height: auto;
+                            }
+                            .videoFloat {
+                                width: 50%;
+                            }
+                        }
                 </style>
                 <title>${title} - ${composer}</title>
             </head>
@@ -283,7 +289,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 <section class="header">
                     <h1>${title}</h1>
                     <p id="composer">- ${composer}</p>
-                    <p id="key">${timesignature}
+                    <p id="key">&nbsp;&nbsp;&nbsp;${timesignature}
                     <span class="transpose-buttons">
                         <button onclick="transposeChords(1)">&#9650;</button>
                         <button onclick="transposeChords(-1)">&#9660;</button>
