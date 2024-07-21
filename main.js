@@ -584,6 +584,14 @@ function Search() {
     container.innerHTML = '';
 
     matches.forEach(tune => {
+
+        let searchBox = document.getElementById('searchBox');
+        let existingParagraph = searchBox.querySelector('p');
+
+        if (existingParagraph) {
+            searchBox.removeChild(existingParagraph);
+        }
+
         const newDiv = document.createElement('div');
         newDiv.className = 'tune';
 
