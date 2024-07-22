@@ -445,8 +445,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 iframe.width = '300'; // Adjust width as needed
                 iframe.src = "${video_url.replace('watch?v=', '').replace('youtube.com/', 'hepedroza.com/videosFreeBook/downloaded_videos/')}.mp4"
                 iframe.frameborder = '0';
-                iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowfullscreen = true;
+                iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
 
                 // Show/Hide button
                 const toggleButton = document.createElement('button');
