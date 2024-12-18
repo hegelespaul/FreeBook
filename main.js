@@ -1,5 +1,67 @@
+const tunes = []; // Array to hold parsed tunes
+let renderedCount = 0; // Tracks how many tunes have been rendered
+const batchSize = 50; // Number of items to render per batch
+
+// Function to render a batch of tunes
+function renderBatch() {
+    const container = document.getElementById('index');
+    const batch = tunes.slice(renderedCount, renderedCount + batchSize);
+
+    const fragment = document.createDocumentFragment(); // Use a fragment for performance
+
+    batch.forEach(tune => {
+        const newDiv = document.createElement('div');
+        newDiv.className = 'tune';
+
+        const titleLink = document.createElement('a');
+        titleLink.href = generateNewHTMLTune(
+            tune.title,
+            tune.composer,
+            tune.sections,
+            tune.key,
+            tune.timesignature,
+            tune.url
+        );
+        titleLink.textContent = tune.title;
+
+        const composerLink = document.createElement('a');
+        composerLink.href = '#';
+        composerLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            Composer(tune.composer); // Handle composer click
+        });
+        composerLink.textContent = tune.composer;
+
+        const divider = document.createElement('span');
+        divider.textContent = ' - ';
+
+        newDiv.appendChild(titleLink);
+        newDiv.appendChild(divider);
+        newDiv.appendChild(composerLink);
+        fragment.appendChild(newDiv);
+    });
+
+    container.appendChild(fragment);
+    renderedCount += batchSize;
+
+    // Stop further rendering if all tunes are rendered
+    if (renderedCount >= tunes.length) {
+        window.removeEventListener('scroll', handleScroll);
+    }
+}
+
+// Scroll event listener to render more items on demand
+function handleScroll() {
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 200;
+
+    if (scrollPosition >= threshold) {
+        renderBatch();
+    }
+}
+
+
 const filePath = 'JazzStandards-url.json';
-let tunes = [];
 
 fetch(filePath)
     .then(response => {
