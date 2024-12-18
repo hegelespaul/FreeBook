@@ -1,35 +1,65 @@
-const tunes = []; // Array to hold parsed tunes
-let renderedCount = 0; // Tracks how many tunes have been rendered
-const batchSize = 50; // Number of items to render per batch
+const tunes = [];
+const filePath = 'JazzStandards-url.json';
+let cachedData = null; // Variable to cache the data
 
-// Function to render a batch of tunes
-function renderBatch() {
+function fetchData() {
+    if (cachedData) {
+        // Use cached data if it exists
+        processJSON(cachedData);
+    } else {
+        fetch(filePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                cachedData = data; // Cache the data
+                processJSON(cachedData); // Process the data
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    }
+}
+
+function processJSON(data) {
+    const tunes = [];
+
+    data.forEach(element => {
+        tunes.push({
+            title: element['Title'],
+            composer: element['Composer'],
+            sections: element['Sections'],
+            key: element['Key'],
+            timesignature: element['TimeSignature'],
+            url: element['url']
+        });
+    });
+
+    // Sort tunes by title
+    tunes.sort((a, b) => a.title.localeCompare(b.title));
+
     const container = document.getElementById('index');
-    const batch = tunes.slice(renderedCount, renderedCount + batchSize);
+    container.innerHTML = ''; // Clear the container before appending new elements
 
-    const fragment = document.createDocumentFragment(); // Use a fragment for performance
-
-    batch.forEach(tune => {
+    tunes.forEach(tune => {
         const newDiv = document.createElement('div');
         newDiv.className = 'tune';
 
         const titleLink = document.createElement('a');
-        titleLink.href = generateNewHTMLTune(
-            tune.title,
-            tune.composer,
-            tune.sections,
-            tune.key,
-            tune.timesignature,
-            tune.url
-        );
+        titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
 
         const composerLink = document.createElement('a');
         composerLink.href = '#';
+
         composerLink.addEventListener('click', (event) => {
-            event.preventDefault();
-            Composer(tune.composer); // Handle composer click
+            event.preventDefault(); // Prevent default link behavior
+            Composer(tune.composer); // Call Composer with the clicked composer
         });
+
         composerLink.textContent = tune.composer;
 
         const divider = document.createElement('span');
@@ -38,91 +68,13 @@ function renderBatch() {
         newDiv.appendChild(titleLink);
         newDiv.appendChild(divider);
         newDiv.appendChild(composerLink);
-        fragment.appendChild(newDiv);
+
+        container.appendChild(newDiv);
     });
-
-    container.appendChild(fragment);
-    renderedCount += batchSize;
-
-    // Stop further rendering if all tunes are rendered
-    if (renderedCount >= tunes.length) {
-        window.removeEventListener('scroll', handleScroll);
-    }
 }
 
-// Scroll event listener to render more items on demand
-function handleScroll() {
-    const scrollPosition = window.innerHeight + window.scrollY;
-    const threshold = document.body.offsetHeight - 200;
-
-    if (scrollPosition >= threshold) {
-        renderBatch();
-    }
-}
-
-
-const filePath = 'JazzStandards-url.json';
-
-fetch(filePath)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const js = data; // Now the JSON data is stored in the variable 'js'
-        js.forEach(element => {
-            tunes.push({
-                title: element['Title'],
-                composer: element['Composer'],
-                sections: element['Sections'],
-                key: element['Key'],
-                timesignature: element['TimeSignature'],
-                url: element['url']
-            });
-        });
-
-        // Sort tunes by title
-        tunes.sort((a, b) => a.title.localeCompare(b.title));
-
-        tunes.forEach(tune => {
-            const newDiv = document.createElement('div');
-            newDiv.className = 'tune';
-
-            const titleLink = document.createElement('a');
-            titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
-            titleLink.textContent = tune.title;
-            // titleLink.setAttribute('target', '_blank');
-
-
-            const composerLink = document.createElement('a');
-            composerLink.href = '#';
-
-            composerLink.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default link behavior
-                Composer(tune.composer); // Call Composer with the clicked composer
-            });
-
-            composerLink.textContent = tune.composer;
-
-            const divider = document.createElement('span');
-            divider.textContent = ' - ';
-
-            newDiv.appendChild(titleLink);
-            newDiv.appendChild(divider);
-            newDiv.appendChild(composerLink);
-
-            const container = document.getElementById('index');
-            container.appendChild(newDiv);
-        });
-
-    })
-    .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
-    });
-
-
+// Call the function to fetch data
+fetchData();
 
 function generateNewHTMLTune(title, composer, sections, key, timesignature, video_url) {
     key = key !== undefined ? key : '';
