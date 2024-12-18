@@ -31,7 +31,7 @@ fetch(filePath)
             const titleLink = document.createElement('a');
             titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
-            titleLink.setAttribute('target', '_blank');
+            // titleLink.setAttribute('target', '_blank');
 
 
             const composerLink = document.createElement('a');
@@ -72,7 +72,7 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
-                <style>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />                <style>
                      body {
                             margin-left: 0px;
                             display: flex;
@@ -218,6 +218,13 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                             border: none;
                             cursor: move;
                         }
+                        #return{
+                            display: flex;
+                            flex-direction: row;
+                        }
+                        .material-symbols-outlined{
+                            color: white;
+                        }
                         @media (max-width: 768px) {
                             body {
                                 width: 80%;
@@ -282,14 +289,53 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                                 width: 50%;
                             }
                         }
+
+                        @media (max-width: 425px) {
+                            .header {
+                                margin-bottom: -20px;
+                            }
+                            body {
+                                width: 95%;
+                                margin-left: 0px;
+                                
+                            }
+                            h1 {
+                                font-size: 5vw;
+                            }
+                            h2 {
+                                font-size: 3vw;
+                            }
+                            h4, h5 {
+                                font-size: 3vw;
+                            }
+                            pre {
+                                font-size: 5vw;
+                            }
+                            #composer {
+                                font-size: 12px;
+                            }
+                            #key {
+                                font-size: 2.5vw;
+                            }
+                            .transpose-buttons button {  
+                                font-size: 3vw;
+                            }
+                            div > button {
+                                font-size: 10px;
+                            }
+                            #key {
+                                display: none;
+                            }
+                        }
                 </style>
                 <title>${title} - ${composer}</title>
             </head>
             <body>
                 <section class="header">
+                    <section id="return"><a href="https://freebookofjazz.netlify.app"><span class="material-symbols-outlined">home</span></a></section>
                     <h1>${title}</h1>
                     <p id="composer">- ${composer}</p>
-                    <p id="key">&nbsp;&nbsp;&nbsp;${timesignature}
+                    <p id="key">&nbsp;&nbsp;&nbsp;${key}
                     <span class="transpose-buttons">
                         <button onclick="transposeChords(1)">&#9650;</button>
                         <button onclick="transposeChords(-1)">&#9660;</button>
@@ -512,8 +558,10 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 element.addEventListener('touchstart', onPointerDown, { passive: false });
 
             }
-            embedYouTubeVideo();
-
+            let width = document.documentElement.clientWidth
+            if(width > 425){
+                embedYouTubeVideo();
+            }
             </script>
         </body>
         </html>
@@ -550,7 +598,7 @@ function Composer(composer) {
         const titleLink = document.createElement('a');
         titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
-        titleLink.setAttribute('target', '_blank');
+        // titleLink.setAttribute('target', '_blank');
 
 
         const composerSpan = document.createElement('span');
@@ -597,7 +645,7 @@ function Search() {
         const titleLink = document.createElement('a');
         titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
         titleLink.textContent = tune.title;
-        titleLink.setAttribute('target', '_blank');
+        // titleLink.setAttribute('target', '_blank');
 
 
         const composerLink = document.createElement('a');
@@ -639,7 +687,7 @@ function Search() {
             const titleLink = document.createElement('a');
             titleLink.href = generateNewHTMLTune(tune.title, tune.composer, tune.sections, tune.key, tune.timesignature, tune.url);
             titleLink.textContent = tune.title;
-            titleLink.setAttribute('target', '_blank');
+            // titleLink.setAttribute('target', '_blank');
 
 
             const composerLink = document.createElement('a');
