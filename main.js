@@ -25,8 +25,6 @@ function fetchData() {
 }
 
 function processJSON(data) {
-    const tunes = [];
-
     data.forEach(element => {
         tunes.push({
             title: element['Title'],
