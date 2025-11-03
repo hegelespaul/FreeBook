@@ -501,7 +501,21 @@ function generateNewHTMLTune(title, composer, sections, key, timesignature, vide
                 const iframe = document.createElement('iframe');
                 iframe.className = 'floating-video';
                 iframe.width = '300'; // Adjust width as needed
-                iframe.src = "${video_url.replace('watch?v=', '').replace('youtube.com/', 'hepedroza.com/videosFreeBook/downloaded_videos/')}.mp4"
+                
+                // Extract video ID from YouTube URL
+                let videoId = '';
+                const url = "${video_url}";
+                
+                // Handle different YouTube URL formats
+                if (url.includes('watch?v=')) {
+                    videoId = url.split('watch?v=')[1].split('&')[0];
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else if (url.includes('youtube.com/embed/')) {
+                    videoId = url.split('embed/')[1].split('?')[0];
+                }
+                
+                iframe.src = "https://hepedroza.com/videosFreeBook/downloaded_videos/" + videoId + ".mp4";
                 iframe.frameborder = '0';
                 iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
 
